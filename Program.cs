@@ -491,3 +491,33 @@ namespace GeneticAlgorithmApp
 
             return (bestIndividual, bestFitness);
         }
+
+        // Selekcja turniejowa
+        private List<int> TournamentSelection(List<List<int>> population)
+        {
+            List<List<int>> tournamentParticipants = new List<List<int>>();
+
+            for (int i = 0; i < tournamentSize; i++)
+            {
+                int randomIndex = random.Next(population.Count);
+                tournamentParticipants.Add(population[randomIndex]);
+            }
+
+            var best = FindBestIndividual(tournamentParticipants);
+            return best.individual;
+        }
+
+        // Mutacja jednopunktowa
+        private List<int> Mutate(List<int> individual)
+        {
+            List<int> mutatedIndividual = new List<int>(individual);
+
+            if (random.NextDouble() < mutationProbability)
+            {
+                int mutationPoint = random.Next(individual.Count);
+                mutatedIndividual[mutationPoint] = 1 - mutatedIndividual[mutationPoint]; // Zamiana 0 na 1 lub 1 na 0
+            }
+
+            return mutatedIndividual;
+        }
+
