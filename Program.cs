@@ -419,5 +419,50 @@ namespace GeneticAlgorithmApp
             bestFitnessList.Clear();
             averageFitnessList.Clear();
         }
-    }
-}
+        // Funkcja celu, któr¹ optymalizujemy
+        private double TargetFunction(double x1, double x2)
+        {
+            return Math.Sin(x1 * 0.05) + Math.Sin(x2 * 0.05) + 0.4 * Math.Sin(x1 * 0.15) * Math.Sin(x2 * 0.15);
+        }
+        // Tworzenie losowego osobnika
+        private List<int> CreateRandomIndividual()
+        {
+            int chromosomeLength = bitsPerParameter * numParameters;
+            List<int> individual = new List<int>();
+
+            for (int i = 0; i < chromosomeLength; i++)
+            {
+                individual.Add(random.NextDouble() < 0.5 ? 0 : 1);
+            }
+
+            return individual;
+        }
+        // Dekodowanie osobnika do wartoœci parametrów
+        private List<double> DecodeIndividual(List<int> individual)
+        {
+            List<double> parameters = new List<double>();
+
+            for (int paramIdx = 0; paramIdx < numParameters; paramIdx++)
+            {
+                int startIdx = paramIdx * bitsPerParameter;
+                int endIdx = startIdx + bitsPerParameter;
+                List<int> paramBits = individual.GetRange(startIdx, bitsPerParameter);
+
+                // Konwersja z binarnego do dziesiêtnego
+                int value = 0;
+                for (int i = 0; i < paramBits.Count; i++)
+                {
+                    if (paramBits[i] == 1)
+                    {
+                        value += (int)Math.Pow(2, paramBits.Count - i - 1);
+                    }
+                }
+
+                // Mapowanie wartoœci do przedzia³u [paramMin, paramMax]
+                double maxBinaryValue = Math.Pow(2, bitsPerParameter) - 1;
+                double normalizedValue = paramMin + (value / maxBinaryValue) * (paramMax - paramMin);
+                parameters.Add(normalizedValue);
+            }
+
+            return parameters;
+        }

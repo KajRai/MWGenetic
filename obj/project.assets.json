@@ -1701,11 +1701,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\kajet\\source\\repos\\WinFormsApp4\\WinFormsApp4\\WinFormsApp4.csproj",
+      "projectUniqueName": "C:\\Users\\kajet\\Documents\\GitHub\\MWGenetic\\WinFormsApp4.csproj",
       "projectName": "WinFormsApp4",
-      "projectPath": "C:\\Users\\kajet\\source\\repos\\WinFormsApp4\\WinFormsApp4\\WinFormsApp4.csproj",
+      "projectPath": "C:\\Users\\kajet\\Documents\\GitHub\\MWGenetic\\WinFormsApp4.csproj",
       "packagesPath": "C:\\Users\\kajet\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\kajet\\source\\repos\\WinFormsApp4\\WinFormsApp4\\obj\\",
+      "outputPath": "C:\\Users\\kajet\\Documents\\GitHub\\MWGenetic\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
