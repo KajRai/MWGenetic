@@ -521,3 +521,86 @@ namespace GeneticAlgorithmApp
             return mutatedIndividual;
         }
 
+
+        // G³ówna funkcja algorytmu genetycznego
+        private void RunGeneticAlgorithm()
+        {
+            // Krok 1: Tworzenie pocz¹tkowej populacji
+            List<List<int>> population = new List<List<int>>();
+
+            for (int i = 0; i < populationSize; i++)
+            {
+                population.Add(CreateRandomIndividual());
+            }
+
+            // Krok 2: Ocena pocz¹tkowej populacji
+            var initialBest = FindBestIndividual(population);
+            List<double> bestParams = DecodeIndividual(initialBest.individual);
+            double averageFitness = population.Average(ind => EvaluateFitness(ind));
+
+            // Zapisujemy dane do wykresu
+            bestFitnessList.Add(initialBest.fitness);
+            averageFitnessList.Add(averageFitness);
+
+            // Wyœwietlamy pocz¹tkowe wyniki
+            AppendResultText($"Iteracja 0:\r\n");
+            AppendResultText($"  Najlepszy osobnik: F({bestParams[0]:F4}, {bestParams[1]:F4}) = {initialBest.fitness:F4}\r\n");
+            AppendResultText($"  Œrednia wartoœæ funkcji przystosowania: {averageFitness:F4}\r\n\r\n");
+
+            UpdateChart();
+
+            // Krok 3: G³ówna pêtla algorytmu
+            for (int iteration = 1; iteration <= maxIterations; iteration++)
+            {
+                // 3.1 Selekcja turniejowa
+                List<List<int>> newPopulation = new List<List<int>>();
+
+                for (int i = 0; i < populationSize - 1; i++)
+                {
+                    var selected = TournamentSelection(population);
+                    newPopulation.Add(selected);
+                }
+
+                // 3.2 Mutacja
+                for (int i = 0; i < newPopulation.Count; i++)
+                {
+                    newPopulation[i] = Mutate(newPopulation[i]);
+                }
+
+                // 3.3 Dodanie najlepszego osobnika z poprzedniej populacji (elityzm)
+                var best = FindBestIndividual(population);
+                newPopulation.Add(new List<int>(best.individual));
+
+                // 3.4 Ocena nowej populacji
+                population = newPopulation;
+                var newBest = FindBestIndividual(population);
+                bestParams = DecodeIndividual(newBest.individual);
+                averageFitness = population.Average(ind => EvaluateFitness(ind));
+
+                // Zapisujemy dane do wykresu
+                bestFitnessList.Add(newBest.fitness);
+                averageFitnessList.Add(averageFitness);
+
+                // 3.5 Wyœwietlenie statystyk
+                AppendResultText($"Iteracja {iteration}:\r\n");
+                AppendResultText($"  Najlepszy osobnik: F({bestParams[0]:F4}, {bestParams[1]:F4}) = {newBest.fitness:F4}\r\n");
+                AppendResultText($"  Œrednia wartoœæ funkcji przystosowania: {averageFitness:F4}\r\n\r\n");
+
+                UpdateChart();
+            }
+
+            // Wyœwietlenie wyników koñcowych
+            var finalBest = FindBestIndividual(population);
+            var finalParams = DecodeIndividual(finalBest.individual);
+
+            AppendResultText("\r\nWynik koñcowy:\r\n");
+            AppendResultText($"Najlepsza wartoœæ funkcji: {finalBest.fitness:F4}\r\n");
+            AppendResultText($"dla parametrów x1={finalParams[0]:F4}, x2={finalParams[1]:F4}\r\n");
+
+            // Wy³¹czamy blokadê przycisku start
+            this.Invoke(new Action(() => {
+                Button startButton = (Button)Controls.Find("startButton", true)[0];
+                startButton.Enabled = true;
+                isRunning = false;
+            }));
+        }
