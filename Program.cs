@@ -604,3 +604,51 @@ namespace GeneticAlgorithmApp
                 isRunning = false;
             }));
         }
+        // Metoda do bezpiecznego dodawania tekstu do RichTextBox z ró¿nych w¹tków
+        private void AppendResultText(string text)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action<string>(AppendResultText), text);
+                return;
+            }
+
+            RichTextBox resultsTextBox = (RichTextBox)Controls.Find("resultsTextBox", true)[0];
+            resultsTextBox.AppendText(text);
+            resultsTextBox.ScrollToCaret();
+        }
+
+        // Metoda do aktualizacji wykresu
+        private void UpdateChart()
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(UpdateChart));
+                return;
+            }
+
+            Chart chart = (Chart)Controls.Find("fitnessChart", true)[0];
+
+            chart.Series[0].Points.Clear();
+            chart.Series[1].Points.Clear();
+
+            for (int i = 0; i < bestFitnessList.Count; i++)
+            {
+                chart.Series[0].Points.AddXY(i, bestFitnessList[i]);
+                chart.Series[1].Points.AddXY(i, averageFitnessList[i]);
+            }
+        }
+    }
+
+    static class Program
+    {
+        
+        [STAThread]
+        static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new MainForm());
+        }
+    }
+}
