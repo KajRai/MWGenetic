@@ -466,3 +466,28 @@ namespace GeneticAlgorithmApp
 
             return parameters;
         }
+        // Ocena funkcji przystosowania dla osobnika
+        private double EvaluateFitness(List<int> individual)
+        {
+            List<double> parameters = DecodeIndividual(individual);
+            return TargetFunction(parameters[0], parameters[1]);
+        }
+
+        // Znajdowanie najlepszego osobnika w populacji
+        private (List<int> individual, double fitness) FindBestIndividual(List<List<int>> population)
+        {
+            double bestFitness = double.NegativeInfinity;
+            List<int> bestIndividual = null;
+
+            foreach (var individual in population)
+            {
+                double fitness = EvaluateFitness(individual);
+                if (fitness > bestFitness)
+                {
+                    bestFitness = fitness;
+                    bestIndividual = individual;
+                }
+            }
+
+            return (bestIndividual, bestFitness);
+        }
